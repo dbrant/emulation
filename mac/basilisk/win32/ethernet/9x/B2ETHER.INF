@@ -1,0 +1,74 @@
+;
+; B2ETHER.INF
+;
+; Network Transports
+;
+
+[version]
+; CatalogFile=B2ETHER.cat
+; LayoutFile= Layout.inf, Layout1.inf, Layout2.inf
+signature="$CHICAGO$"
+Class=NetTrans
+ClassGUID={4d36e975-e325-11ce-bfc1-08002be10318}
+provider=%V_MS%
+
+[DestinationDirs]
+DefaultDestDir = 11
+B2ETHER.CopyFiles = 11
+
+[Manufacturer]
+%V_MS%=MS
+
+[MS]
+%B2ETHER.DeviceDesc%=   B2ETHER.ndi, B2ETHER
+
+[ControlFlags]
+
+[B2ETHER.ndi]
+AddReg=B2ETHER.ndi.reg
+DeviceID=B2ETHER
+MaxInstance=1
+
+[B2ETHER.ndi.reg]
+HKR,Ndi,DeviceID,,B2ETHER
+HKR,Ndi,MaxInstance,,1
+HKR,Ndi,NetType,,1
+
+; NDIS Info
+HKR,NDIS,LogDriverName,,B2ETHER
+HKR,NDIS,MajorNdisVersion,1,03
+HKR,NDIS,MinorNdisVersion,1,0a
+
+; Interfaces
+HKR,Ndi\Interfaces,DefLower,,"ndis3"
+HKR,Ndi\Interfaces,LowerRange,,"ndis3"
+
+; Install sections
+HKR,Ndi\Install,,,"B2ETHER.Install"
+HKR,Ndi\Remove,,,"B2ETHER.Remove"
+
+; Context Help
+HKR,Ndi,HelpText,,%B2ETHER_HELP%
+
+[B2ETHER.Install]
+AddReg=B2ETHER.AddReg
+CopyFiles=B2ETHER.CopyFiles
+
+[B2ETHER.AddReg]
+HKR,,DevLoader,,*ndis
+HKR,,DeviceVxDs,,B2ETHER.vxd
+
+[B2ETHER.CopyFiles]
+B2ETHER.vxd
+
+[B2ETHER.Remove]
+AddReg=B2ETHER.Rmv.AddReg
+
+[B2ETHER.Rmv.AddReg]
+
+[strings]
+V_MS="Basilisk II"
+V_CLASSNAME="Network Protocol"
+
+B2ETHER.DeviceDesc="Basilisk II Ethernet Driver"
+B2ETHER_HELP="Basilisk II Ethernet Driver"

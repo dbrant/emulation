@@ -1,0 +1,222 @@
+Basilisk II Windows port ethernet support
+-----------------------------------------
+
+
+Overview
+--------
+
+Windows 2000 Professional, Windows NT 4.0, Windows 98 and Windows 95 OSR2
+are supported. Original Windows 95 may or may not work. The selected NDIS driver
+name is saved to different preference entries for NT, Win2k and 9x platforms to
+support multi-boot environments.
+
+
+Installation (Windows 2000 Professional)
+----------------------------------------
+- Log in with administrator rights. After installation, user rights suffice.
+- Open Network and Dial-up Connections in Control Panel. 
+- Click Local Area Connection.
+- Click the File menu, and then click Properties, or click the Properties button.
+- In the Local Area Connection Properties dialog box, click Install. 
+- Select "Protocol", and then click "Add"
+- Click "Have disk".
+- Browse to the folder where you unzipped files "B2Win2k.inf" and the
+  Windows 2000 version of the "B2ETHER.SYS" driver. Click OK.
+- Select "Basilisk II Ethernet driver" from the list and click OK.
+- Close the dialog. Wait until the binding analysis is complete,
+- Reboot the computer (recommended).
+- After reboot, select the desired network card in the Basilisk GUI 
+  ethernet page.
+
+
+Installation (Windows NT 4.0)
+-----------------------------
+- Log in with administrator rights. After installation, user rights suffice.
+- Start Windows Control Panel and double-click the "Network" icon.
+- Select the "Services" tab.
+- Click "Add..", then "Have disk".
+- Enter the full path of the directory where you unzipped
+  the files "B2ETHER.SYS" and "OEMSETUP.INF", and click OK.
+- Select "Basilisk II Ethernet driver" from the list and click OK.
+- Close the dialog. Wait until the binding analysis is complete,
+  and reboot when advised.
+- After reboot, select the desired network card in the Basilisk GUI 
+  ethernet page.
+
+
+Installation (Windows 98)
+-------------------------
+- Start Windows Control Panel and double-click the "Network" icon.
+- Click "Add..", then "Protocol", then "Have disk".
+- Browse to the directory where you unzipped the files 
+  "B2ETHER.INF" and "B2ETHER.VXD", and click OK.
+- Select "Basilisk II Ethernet driver" from the list and click OK.
+  "Basilisk II Ethernet driver" should appear in the list.
+  If you get a message claiming that the "Specified location does not 
+  contain information about your hardware", you already installed
+  it once. Remove it first if you need to reinstall, only one
+  instance is allowed. You may also try to temporarily move the two files
+  to the root folder of some drive.
+- Close the dialog. Wait until the binding analysis is complete,
+  and reboot when advised. You may be prompted to insert Windows 98
+  installation CD to copy some NDIS support files. Most of them are
+  probably already present, if you are sure that they are you can
+  skip the file copying (except the B2ETHER.VXD file).
+- After reboot, select the desired network card in the Basilisk GUI 
+  ethernet page.
+
+
+Installation (Windows 95)
+-------------------------
+- Tested on OSR2, behaviour on older versions is unknown. Installation is
+  the same as on Windows 98, except that Windows 95 is even more picky
+  about the folder where the installation files are. Try the root folder
+  of some drive, or even a floppy as a last resort.
+
+
+GUI options
+-----------
+Select which NIC (network interface card) you want to bind to.
+I have tested with one NIC setup only, multiple may or may not work.
+I have no cable modems to test with, but if yours shows up
+as a network card you may be able to use it.
+
+Other options are probably fine by default.
+
+If you want to run any Mac "sniffer" application (network analyzers)
+that expects to see all packets on the wire, you need to enable the
+promiscuous mode. On heavy traffic networks, this may result in packet
+loss and slow operation of Basilisk II. Normally, stick with "Get
+AppleTalk multicast packets".
+
+By default, the hardware network card address is used (permanent 
+address) to identify self. You can try current MAC address too,
+but normally these are the same. "MAC" in this context does not refer
+to Macintosh, but Media Access Controller.
+
+You can also specify a "fake" hardware address. It's a 12 digit hexadecimal
+string with no space in between characters. The address must not conflict with
+any real NIC on the network. This may allow you to connect to some AppleShare
+servers running on the same computer. If you use this option, you need to 
+specify the promiscuous mode as well. However, this option may break MacTCP traffic
+to other Basilisk II computers, but not to other NT computers on the network.
+
+The behaviour of the address faking is going to change in the future.
+
+
+TCP over ethernet
+-----------------
+MacTCP should work if you have Mac ethernet extensions 
+installed and enabled. You can even connect to other TCP/IP
+server software running on the same machine. Home users with
+a network card/ISDN combo may want to set up a proxy server to
+access the internet.
+
+OpenTransport works with 68030 or 68040 CPU.
+
+
+AppleShare
+----------
+You should be able to connect to remote AppleShare file 
+servers, share your files and print. Depending on the MacOS
+version, you may need to install EtherTalk. Select it in the
+Network control panel.
+
+Switching from LocalTalk to EtherTalk may be tricky and 
+tends to crash. This is not due to any problems in the 
+ethernet support, but LocalTalk is not supported by 
+Basilisk II and even when switching away from the LocalTalk,
+the Mac tries to access it.
+
+To minimize the chance of the crash, you may want to
+try some of the following (some items may not be relevant):
+
+	- Disable the extensions "Serial", "Serial port arbitrator" and
+    "Serial tool".
+  - Make sure there is no desktop printers, or anything
+	  else that could directly or indirectly try to access
+		LocalTalk.
+	- Start with extensions disabled (but sometimes the
+	  EtherTalk selection is not saved).
+  - Do not start other apps before switching to ethertalk
+  - Disable file sharing
+
+You should already know everything after that (how to use
+Chooser, sharing setup, tcp/ip etc). Please do not send me
+questions about general Macintosh networking, they will be
+ignored.
+
+If you are able to use OpenTransport with 68030 or 68040 CPU option
+and have a 1 MB ROM, you can use AppleShare too. OpenTransport seems
+to work much more reliably than classic networking.
+
+
+
+File servers and file sharing with workstations
+-----------------------------------------------
+Make sure that you have compatible versions of AppleShare.
+No known problems, except that under extremely heavy network
+loads (two Basilisks writing cocurrently to each other disks as
+fast as possible) the connections may sometimes get broken.
+
+
+Shared printers
+---------------
+No known problems.
+
+
+On performance
+--------------
+The networking code has some performance hit. It is noticeable on
+low-end computers only, on PII300 and better it can hardly be
+detected.
+
+You should not run network intensive programs at the same time
+under Basilisk II and Windows on the same machine. They share
+the same network card and both parties must do some work to
+determine whether packets are meant for them or not.
+
+After switching from LocalTalk to EtherTalk, it may take
+a short while before AppleShare servers and printers appear
+in Chooser. If you don't want to wait, switch AppleTalk off
+and then on again.
+
+
+Technical TODO
+--------------
+There is no need to lift the echo packets to the application
+level. Downstream people should really take care of them.
+
+Some experiments would be needed to find out sufficient
+pending read pool size.
+
+Somebody should run the MS hardware stress suite against this.
+
+Windows 98 version does not use i/o completion callbacks
+but a different technique that involves waiting on overlapped
+file handles. Although there is always a pool of 10 pending reads,
+this is still vulnerable and should be changed.
+
+The Windows 98 version sometimes shows a black screen a few seconds
+when shutting down Basilisk II. This is due to an attempt to close
+down pending reads gracefully; if it does not succeed in 3 seconds,
+the threads are killed. Maybe it would be in order to come up with
+a better mechanism.
+
+
+
+Known problems
+--------------
+There has been some problems with AppleTalk zone list behaving rather oddly.
+
+
+
+D.I.Y
+-----
+If the network drivers do not work for you, you are encouraged to
+download a copy of the source code distribution and debug it. You need
+Visual Studio 5 or 6 and MASM. The DDK, either Win98, NT4 or Win2000 version,
+is needed to build the drivers. DDK's are available at Microsoft web site.
+
+--
+Lauri

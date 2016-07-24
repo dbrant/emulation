@@ -1,0 +1,42 @@
+disk .\disks\OS9.img
+extfs 
+screen win/1024/768
+windowmodes 3
+screenmodes 63
+seriala COM1
+serialb COM2
+rom ..\roms\79D68D63 - Power Mac G3 desktop.ROM
+bootdrive 0
+bootdriver 0
+ramsize 67108864
+frameskip 0
+gfxaccel true
+nocdrom true
+nonet false
+nosound false
+nogui false
+noclipconversion false
+ignoresegv false
+ignoreillegal false
+jit true
+jit68k false
+keyboardtype 5
+keycodes false
+mousewheelmode 1
+mousewheellines 3
+ignoresegv false
+idlewait true
+keycodes false
+mousewheelmode 1
+mousewheellines 3
+enableextfs false
+debugextfs false
+extdrives CDEFGHIJKLMNOPQRSTUVWXYZ
+pollmedia false
+etherpermanentaddress true
+ethermulticastmode 0
+routerenabled false
+ftp_port_list 21
+tcp_port 
+portfile0 C:\B2TEMP0.OUT
+portfile1 C:\B2TEMP1.OUT

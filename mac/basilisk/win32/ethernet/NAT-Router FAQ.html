@@ -1,0 +1,381 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (WinNT; I) [Netscape]">
+   <meta name="Author" content="lp">
+   <title>Basilisk II Windows port NAT-Router FAQ</title>
+</head>
+<body text="#000000" bgcolor="#F7FB9B" link="#D60027" vlink="#999999" alink="#D60027">
+&nbsp;
+<center>
+<br><b><font size=+3>Basilisk II Windows port NAT/Router FAQ</font></b></center>
+
+<p>
+<hr WIDTH="100%">
+<ul>
+<li>
+<a href="#1">What is this all about?</a></li>
+
+<li>
+<a href="#2">Why is it needed?</a></li>
+
+<li>
+<a href="#3">Why is it called "NAT/Router"?</a></li>
+
+<li>
+<a href="#4">How do I use it?</a></li>
+
+<li>
+<a href="#17">What about Windows 95?</a></li>
+
+<li>
+<a href="#5">What protocols work and what do not?</a></li>
+
+<li>
+<a href="#6">What applications work and what do not?</a></li>
+
+<li>
+<a href="#7">Can I use ethernet card for AppleTalk at the same time?</a></li>
+
+<li>
+<a href="#8">How does it work?</a></li>
+
+<li>
+<a href="#9">Isn't that needlessly complicated -- why not just extract
+the ip packets and pass them on?</a></li>
+
+<li>
+<a href="#10">Are there any bugs?</a></li>
+
+<li>
+<a href="#11">How can it be improved?</a></li>
+
+<li>
+<a href="#12">Are there any other possible applications for this module?</a></li>
+
+<li>
+<a href="#13">The license?</a></li>
+
+<li>
+<a href="#14">Contact information?</a></li>
+
+<li>
+<a href="#15">Porting to other platforms?</a></li>
+
+<li>
+<a href="#16">What else?</a></li>
+</ul>
+
+<hr WIDTH="100%"><a NAME="1"></a><b>Q: What is this all about?</b>
+<p><b>A</b>: This Basilisk II feature implements TCP/IP Internet access
+using your existing Windows Internet connection, should it be a dial-up
+connection or something else.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="2"></a><b>Q: Why is it needed?</b>
+<p><b>A</b>: Basilisk II ships with a complete DIX Ethernet / 802.2 support,
+and a serial port support complete enough to use a modem. They work for
+TCP/IP just great, but there are cases when they cannot be used to access
+the Internet without a proxy server. Having a proxy in between may not
+be the best option for some, and if a modem connection is made from Basilisk
+II, Windows cannot access the Internet at the same time.
+<p>If you already can use TCP/IP in Basilisk II with no problems, you should
+not enable this module -- there is no point. True ip over ethernet is as
+good as it can get; this solution will never be quite as complete.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="3"></a><b>Q: Why is it called "NAT/Router"?</b>
+<p><b>A</b>: Because the module is a combination of a NAT server and a
+router. The emulated Mac thinks that the module is a router in the LAN.
+Functionally it's a NAT server however, since it hides the true identity
+of the Mac from the rest of the world, doing an ip address translation
+and port mapping in both directions. As such, it serves as a [rather worthless]
+firewall for the Mac as well.
+<p>NAT stands for Network Address Translation, providing transparent access
+to the rest of the IP network (usually Internet) via one gateway computer.
+The computers all have unique ip addresses, but the outside world only
+sees one address, the one of the server.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="4"></a><b>Q: How do I use it?</b>
+<p><b>A</b>: This feature is disabled by default. You need to navigate
+to the Basilisk II GUI "Router" page and enable it by checking the "Enable
+NAT/Router module" option.
+<p>You don't need to have Basilisk II ethernet driver installed, actually
+even an ethernet card is not necessary.
+<p>But you must have the ethernet installed on the Mac side. In your emulated
+Mac TCP/IP control panel:
+<blockquote>
+<ol>
+<li>
+Select "Connect via Ethernet"</li>
+
+<li>
+Select "Configure manually"</li>
+
+<li>
+The IP address can be any legal address, but don't use the same IP address
+that you have in Windows. It's always best to ask your network administrator
+for a unique ip address, because you may later disable the NAT/Router module
+and possibly cause an ip address conflict on your network.</li>
+
+<li>
+Subnet "255.255.255.0"</li>
+
+<li>
+The router address can be almost anything, but preferably the same as the
+Windows ip address. It must be different than the ip address you entered
+above.</li>
+
+<li>
+Name server address(es) must be correct. Use the same one(s) you have in
+Windows.</li>
+
+<li>
+Make sure that the option "Use 802.3" (if present) is not selected.</li>
+</ol>
+</blockquote>
+Home users are free to use the class C addresses reserved for private networks,
+for example:
+<blockquote>
+<blockquote>IP: 192.168.0.4
+<br>Subnet 255.255.255.0
+<br>Router: 192.168.0.1</blockquote>
+</blockquote>
+These should work fine even if you have a dial-up account that assigns
+you a different Windows ip address every time (DHCP) you dial to your Internet
+service provider..
+<p>If you don't know what DNS address to enter in Mac TCP/IP control panel,
+check the helpdesk pages of your ISP. While connected, you can also detect
+the DNS address that Windows is currently using by running the following
+command in Windows command prompt.
+<p>Under Windows NT:
+<blockquote>
+<blockquote>C\> <b>ipconfig /ALL</b></blockquote>
+</blockquote>
+Under Windows 95 and 98:
+<blockquote>
+<blockquote>C\> <b>winipcfg</b></blockquote>
+</blockquote>
+
+<p><br><b>IMPORTANT:</b> Before using any form of Basilisk II networking
+on a corporate LAN, please contact your network administrator to find out
+whether you are allowed to do so, and what ip address you can use.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="17"></a><b>Q: What about Windows 95?</b>
+<p><b>A</b>: Windows sockets version 2 is required. All other Windows versions
+have it already installed, but not Windows 95. The update can be downloaded
+from:
+<blockquote><a href="http://www.microsoft.com/windows95/downloads/contents/wuadmintools/s_wunetworkingtools/w95sockets2">http://www.microsoft.com/windows95/downloads/contents/wuadmintools/s_wunetworkingtools/w95sockets2</a></blockquote>
+Please note that Microsoft rearranges web sites often. If you get an error
+stating that the web page was not found, go to <a href="http://www.microsoft.com">http://www.microsoft.com</a>,
+click the search button and enter "Windows Sockets 2 for Windows 95".
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="5"></a><b>Q: What protocols work and what do
+not?</b>
+<p><b>A</b>: The following information has been gathered so far:
+<blockquote>
+<ul>
+<li>
+Outgoing TCP connections work (HTTP, POP3, SMTP)</li>
+
+<li>
+Incoming TCP connections work (server software),&nbsp; if you open the
+appropriate ports in the Router GUI page.</li>
+
+<li>
+FTP is a special case; see the next question.</li>
+
+<li>
+Outgoing UDP connections work (DNS).</li>
+
+<li>
+Incoming UDP connections generally do not work. There is a hack for DNS
+replies.</li>
+
+<li>
+ICMP datagrams work. Under NT4 and Windows 2000, administrator rights are
+required.</li>
+
+<li>
+NetBIOS over TCP/UDP does not work, so you may need to disable Dave and
+other similar NetBIOS drivers.</li>
+</ul>
+</blockquote>
+
+<p><br>
+<hr WIDTH="100%"><a NAME="6"></a><b>Q: What applications work and what
+do not?</b>
+<p><b>A</b>: The following have been tested to some extent:
+<blockquote>
+<ul>
+<li>
+Web browsers: work, tested with Netscape 3/4 and IE4.</li>
+
+<li>
+FTP clients: "Passive" mode works. Active mode works if you define the
+ftp ports (usually 21, others may be used too depending on the server)
+in the GUI router page. Tested with Fetch.</li>
+
+<li>
+FTP in web browsers: Netscape seems to use the "Passive" mode and works.
+IE4 lets the server initiate the data transfer and works only if the ftp
+ports are defined in the GUI.</li>
+
+<li>
+FTP servers: work (ftp ports and server ports must be defined). Tested
+with NetPresenz 4.x.</li>
+
+<li>
+Ping: you can ping the outside world from the Mac. See the comment about
+ICMP datagrams above. Pinging the Mac from outside would probably require
+some clever trickery. Since the Mac is hiding behind the NAT, you would
+have a hard time in telling who is responding anyway, Windows or the Mac.</li>
+
+<li>
+Traceroute: applications that use ICMP echo packets should work. Applications
+that use UDP may not work (Mac TCP Watcher). This is because the headers
+of the timed-out UDP packets are sent back to the Mac. The packets contain
+some information set by Windows, and the Mac compares them against the
+original information and thinks that they are not the same ones. The router
+module patches some of the data back, but it is not possible to recover
+all of them due to the Windows limitations.</li>
+
+<li>
+E-mail: both pop3 and smtp work. Tested with Eudora Light 3.1.</li>
+</ul>
+</blockquote>
+
+<p><br>
+<hr WIDTH="100%"><a NAME="7"></a><b>Q: Can I use ethernet card for AppleTalk
+at the same time?</b>
+<p><b>A</b>: Yes. IP and ARP traffic is forwarded to the router, AppleTalk
+works the same as usual.
+<p>You can, however, use the router module even if you don't have a NIC
+at all and the Basilisk II ethernet driver is not installed.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="8"></a><b>Q: How does it work?</b>
+<p><b>A</b>: When the module is enabled, IP version 4 datagrams and ARP
+datagrams are extracted from the Basilisk II ethernet interface before
+they reach the NIC, and forwarded to the NAT/router module. The module
+changes the source ip address, does a port mapping and uses Windows sockets
+to forward the traffic to whatever destination they are targeted to.
+<p>Incoming IP and ARP packets from the LAN are ignored, effectively decoupling
+Basilisk II from the ethernet card (regarding TCP/IP traffic, but not AppleTalk).
+<p>TCP traffic is implemented by emulating the full-duplex TCP handshaking
+as specified in the Internet standard <i>RFC 793 -- Transmission Control
+Protocol,</i> featuring the basic state machine, flow control, sequence
+numbers and RST/SYN/FIN/ACK/PSH flags. Out-of-the-band data, the urgent
+pointer, window sliding, and some TCP options are not implemented. Nagle
+algorithm and other performance improvements are not properly implemented.
+<p>UDP packets are sent asynchronously to the target, and the same port
+is listened until it has been idle for one minute, then the port is closed.
+This is enough to make DNS work.
+<p>All ICMP packets arriving to the computer are sent to the Mac, never
+mind where they are targeted to. Since this is done using raw ICMP sockets,
+administrator rights are needed under Windows NT 4 and Windows 2000.
+<p>ARP requests are replied immediately using a fake hardware address with
+a non-existent ethernet card manufacturer code.
+<p>FTP data transfers initiated by a remote host require some extra care.
+This is done by examining the outgoing ftp <b>PORT</b> commands and outgoing
+server passive mode announcements. When a port command is detected, the
+command is patched to change the ip address, and a temporary listening
+port is opened. The port is listened to until an incoming connection is
+detected or the ftp control connection is closed. Connection attempts originating
+from any other IP addresses than the ftp server are rejected.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="9"></a><b>Q: Isn't that needlessly complicated
+-- why not just extract the ip packets and pass them on?</b>
+<p><b>A</b>: It's not that simple under Windows. The Windows sockets API
+has some serious limitations. Raw sockets in general (except ICMP) do not
+work on any Windows flavor before Windows 2000. Further, the crucial function
+<b>setsockopt(
+..., IP_HDRINCL, ... )</b> does not work.
+<p>Curiously enough, it might be because of these limitations/bugs that
+Windows "Tracert" utility uses ICMP echo request packets instead of UDP
+packets as most traceroute utilities do.
+<p>Further, there is no way to tell that an external host is attempting
+to connect to an arbitrary local port. That's why you must tell Basilisk
+II what ports to listen to if you want to run server software on your Mac.
+<p>It would be possible to write a TDI filter driver, an NDIS intermediate
+driver or a Winsock layered service provider to handle the raw packet traffic.
+None of these three options is a trivial one, let alone portable.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="10"></a><b>Q: Are there any bugs?</b>
+<p><b>A</b>: Probably.
+<p>I wouldn't use this module for bank transactions as yet -- that is,
+if my own money would be involved :)
+<br>&nbsp;
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="11"></a><b>Q: How can it be improved?</b>
+<p><b>A</b>: There are a lot of things actually. Some of them are:
+<blockquote>
+<ul>
+<li>
+Performance could be improved by implementing the usual TCP optimizations,
+most importantly multiple buffers with TCP window sliding. This would not
+increase web browsing speed much as the rendering is the bottleneck instead
+of network speed.</li>
+
+<li>
+Support for UDP broadcast addresses.</li>
+
+<li>
+Support for incoming UDP datagrams.</li>
+</ul>
+</blockquote>
+
+<p><br>
+<hr WIDTH="100%"><a NAME="12"></a><b>Q: Are there any other possible applications
+for this module?</b>
+<p><b>A</b>: Yes. There is no out-of-the-box NAT for Windows NT 4 (which
+will be around for at least some years to come). It would be easy to use
+this code to write a simple NAT server for NT4, allowing transparent Internet
+access for all computers on your LAN through one gateway computer.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="13"></a><b>Q: The license?</b>
+<p><b>A</b>: This code is a part of the Basilisk II distribution. Basilisk
+II is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version.
+<p>The program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.&nbsp; See the GNU General Public License for
+more details.
+<p>You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+<p>Please read the file <b>COPYING</b> in the main distribution archive.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="14"></a><b>Q: Contact information?</b>
+<p><b>A</b>: My (Lauri Pesonen) e-mail address is <a href="mailto:lpesonen@nic.fi">lpesonen@nic.fi</a>
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="15"></a><b>Q: Porting to other platforms?</b>
+<p><b>A</b>: Some asynchronous socket functions are used (function names
+starting with <b>WSA</b>*) that are Windows extensions to the BSD socket
+library. All other BSD functions are used in a compatible way.
+<p>Thread functions, critical sections and events are Windows-specific.
+<p>When porting to a platform with a proper support for raw sockets, consider
+dropping all the tcp handshaking code, and use <b>IP_HDRINCL</b> instead.
+<br>&nbsp;
+<p>
+<hr WIDTH="100%"><a NAME="16"></a><b>Q: What else?</b>
+<p><b>A</b>: Merry Christmas and a Happy New Year 2001.
+<p>December 26, 2000
+<br>Lauri
+<p>
+<hr WIDTH="100%">
+<br>&nbsp;
+</body>
+</html>

@@ -1,4 +1,4 @@
-extfs /
+extfs ./macroot
 disk ./disks/system7hdd.dsk
 seriala /dev/ttyS0
 serialb /dev/ttyS1
